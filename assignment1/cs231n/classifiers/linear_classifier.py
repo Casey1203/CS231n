@@ -33,10 +33,14 @@ class LinearClassifier:
 
     # Run stochastic gradient descent to optimize W
     loss_history = []
+    a = []
+    for i in range(dim):
+      a.append(i)
+    a = np.array(a)
     for it in xrange(num_iters):
-      X_batch = None
-      y_batch = None
-
+      batch_indices = np.random.choice(a, batch_size, replace=True)
+      X_batch = X[:, batch_indices]
+      y_batch = y[batch_indices]
       #########################################################################
       # TODO:                                                                 #
       # Sample batch_size elements from the training data and their           #
@@ -56,13 +60,14 @@ class LinearClassifier:
       # evaluate loss and gradient
       loss, grad = self.loss(X_batch, y_batch, reg)
       loss_history.append(loss)
-
+      
       # perform parameter update
       #########################################################################
       # TODO:                                                                 #
       # Update the weights using the gradient and the learning rate.          #
       #########################################################################
       pass
+      self.W = self.W - learning_rate * grad
       #########################################################################
       #                       END OF YOUR CODE                                #
       #########################################################################
@@ -85,12 +90,20 @@ class LinearClassifier:
       array of length N, and each element is an integer giving the predicted
       class.
     """
-    y_pred = np.zeros(X.shape[1])
+    y_pred = np.zeros(X.shape[1])#X * 1
+
     ###########################################################################
     # TODO:                                                                   #
     # Implement this method. Store the predicted labels in y_pred.            #
     ###########################################################################
     pass
+    #C * X
+    scores = self.W.dot(X)
+    maxScore = np.max(scores, 0)
+    maxindex = np.zeros(X.shape[1])
+    for i in range(X.shape[1]):
+      y_pred[i] = list(scores[:, i]).index(maxScore[i])
+
     ###########################################################################
     #                           END OF YOUR CODE                              #
     ###########################################################################
